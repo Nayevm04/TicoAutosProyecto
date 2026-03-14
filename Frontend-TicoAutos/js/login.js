@@ -1,58 +1,58 @@
-const API_BASE = "http://localhost:3000";
+const {
+  apiFetch,
+  redirectIfAuthenticated,
+  renderNav,
+  saveSession,
+  setFeedback,
+} = window.TicoAutos;
 
+// Pantalla de login: valida datos minimos y guarda la sesion devuelta por la API.
 const form = document.getElementById("loginForm");
 const msg = document.getElementById("msg");
 const btn = document.getElementById("btnLogin");
 
-function setMsg(text, type) {
-  msg.textContent = text;
-  msg.className = `msg ${type || ""}`.trim();
+renderNav("navActions");
+redirectIfAuthenticated("./index.html");
+
+const lastEmail = sessionStorage.getItem("lastEmail");
+if (lastEmail) {
+  document.getElementById("email").value = lastEmail;
 }
 
-// Si  del registro, autollenar correo
-const lastEmail = sessionStorage.getItem("lastEmail");
-if (lastEmail) document.getElementById("email").value = lastEmail;
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  setMsg("");
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  setFeedback(msg, "");
 
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  if (!email.includes("@")) return setMsg("Correo inválido", "err");
-  if (password.length < 6) return setMsg("Contraseña mínima 6 caracteres", "err");
+  if (!email.includes("@")) {
+    return setFeedback(msg, "Ingresa un correo valido", "error");
+  }
+
+  if (password.length < 6) {
+    return setFeedback(msg, "La contrasena debe tener al menos 6 caracteres", "error");
+  }
 
   btn.disabled = true;
   btn.textContent = "Ingresando...";
 
   try {
-    const resp = await fetch(`${API_BASE}/api/auth/login`, {
+    const data = await apiFetch("/api/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await resp.json().catch(() => ({}));
+    saveSession(data);
+    setFeedback(msg, "Login exitoso. Redirigiendo...", "success");
 
-    if (!resp.ok) return setMsg(data.message || "Error en login", "err");
-
-    // Guardar token para usarlo en rutas protegidas
-    sessionStorage.setItem("token", data.token);
-    sessionStorage.setItem("userId", data.user.id);
-
-    setMsg(" Login exitoso", "ok");
-
-    //redirigir a una página principal
-    setTimeout(() => {
-      window.location.href = "./index.html"; 
-    }, 800);
-
+    window.setTimeout(() => {
+      window.location.href = "./index.html";
+    }, 700);
   } catch (error) {
-    console.error(error);
-    setMsg("No se pudo conectar con el servidor", "err");
+    setFeedback(msg, error.message || "No fue posible iniciar sesion", "error");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Iniciar sesión";
+    btn.textContent = "Iniciar sesion";
   }
 });

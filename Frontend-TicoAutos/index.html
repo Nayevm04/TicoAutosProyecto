@@ -3,26 +3,114 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TicoAutos | Principal</title>
+  <title>TicoAutos | Vehiculos en venta</title>
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body>
-
-  <header class="topbar">
-    <button id="logoutBtn">Cerrar sesión</button>
+  <header class="site-header">
+    <div class="brand-block">
+      <a class="brand" href="./index.html">TicoAutos</a>
+      <p class="brand-copy">Encuentra, publica y comparte vehiculos de forma clara y segura.</p>
+    </div>
+    <nav id="navActions" class="nav-actions"></nav>
   </header>
 
-  <main class="container">
-    <h1>Bienvenido a Tico Autos </h1>
-    <p>Vehículos publicados</p>
-    
-    <button onclick="goToCreate()">Publicar vehículo</button>
+  <main class="page-shell">
+    <section class="hero-panel">
+      <div>
+        <span class="eyebrow">Mercado automotriz</span>
+        <h1>Vehiculos publicados con filtros reales, detalle publico y contacto ordenado.</h1>
+        <p class="hero-copy">
+          Explora autos disponibles, revisa al propietario y comparte cada publicacion con un enlace directo.
+        </p>
+      </div>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="./createVehicle.html" id="heroPublishBtn">Publicar vehiculo</a>
+        <a class="btn btn-secondary" href="./questions.html" id="heroQuestionsBtn">Ver mensajes</a>
+      </div>
+    </section>
 
-    <div id="vehicleList" class="vehicle-grid"></div>
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">Busqueda</span>
+          <h2>Filtra vehiculos</h2>
+        </div>
+        <button type="button" class="btn btn-secondary" id="clearFiltersBtn">Limpiar filtros</button>
+      </div>
+
+      <form id="filtersForm" class="filters-grid">
+        <label>
+          Marca
+          <input type="text" id="brand" placeholder="Toyota, Hyundai..." />
+        </label>
+        <label>
+          Modelo
+          <input type="text" id="model" placeholder="Corolla, Tucson..." />
+        </label>
+        <label>
+          Estado
+          <select id="status">
+            <option value="">Todos</option>
+            <option value="disponible">Disponible</option>
+            <option value="vendido">Vendido</option>
+          </select>
+        </label>
+        <label>
+          Pagina
+          <input type="number" id="page" min="1" value="1" />
+        </label>
+        <label>
+          Anio minimo
+          <input type="number" id="minYear" min="1900" max="2100" />
+        </label>
+        <label>
+          Anio maximo
+          <input type="number" id="maxYear" min="1900" max="2100" />
+        </label>
+        <label>
+          Precio minimo
+          <input type="number" id="minPrice" min="0" />
+        </label>
+        <label>
+          Precio maximo
+          <input type="number" id="maxPrice" min="0" />
+        </label>
+        <label>
+          Resultados por pagina
+          <select id="limit">
+            <option value="6">6</option>
+            <option value="9" selected>9</option>
+            <option value="12">12</option>
+          </select>
+        </label>
+        <div class="filters-actions">
+          <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">Resultados</span>
+          <h2>Vehiculos publicados</h2>
+        </div>
+        <p id="resultsMeta" class="panel-meta"></p>
+      </div>
+
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+      <div id="vehicleList" class="vehicle-grid"></div>
+
+      <div class="pagination">
+        <button type="button" class="btn btn-secondary" id="prevPageBtn">Anterior</button>
+        <span id="paginationLabel" class="pagination-label"></span>
+        <button type="button" class="btn btn-secondary" id="nextPageBtn">Siguiente</button>
+      </div>
+    </section>
   </main>
 
+  <script src="./js/app.js"></script>
   <script src="./js/index.js"></script>
-  <script src="./js/vehicles.js"></script>
-
 </body>
 </html>

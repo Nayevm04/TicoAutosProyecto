@@ -1,63 +1,62 @@
-// Dirección de tu backend
-const API_BASE = "http://localhost:3000";
+const {
+  apiFetch,
+  redirectIfAuthenticated,
+  renderNav,
+  setFeedback,
+} = window.TicoAutos;
 
-// Tomamos los elementos del HTML
+// Pantalla de registro: crea el usuario y luego lo envia al login.
 const form = document.getElementById("registerForm");
 const msg = document.getElementById("msg");
 const btn = document.getElementById("btnRegister");
 
-// Función para mostrar mensajes en pantalla
-function setMsg(text, type) {
-  msg.textContent = text;
-  msg.className = `msg ${type || ""}`; 
-}
+renderNav("navActions");
+redirectIfAuthenticated("./index.html");
 
-// Cuando se envía el formulario
-form.addEventListener("submit", async (e) => {
-  e.preventDefault(); // evita que la página se recargue
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  setFeedback(msg, "");
 
   const name = document.getElementById("name").value.trim();
   const lastname = document.getElementById("lastname").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
-  // Validaciones 
-  if (name.length < 2) return setMsg("Nombre muy corto", "err");
-  if (lastname.length < 2) return setMsg("Apellido muy corto", "err");
-  if (!email.includes("@")) return setMsg("Correo inválido", "err");
-  if (password.length < 6) return setMsg("Contraseña mínima 6 caracteres", "err");
+  if (name.length < 2) {
+    return setFeedback(msg, "El nombre debe tener al menos 2 caracteres", "error");
+  }
+
+  if (lastname.length < 2) {
+    return setFeedback(msg, "El apellido debe tener al menos 2 caracteres", "error");
+  }
+
+  if (!email.includes("@")) {
+    return setFeedback(msg, "Ingresa un correo valido", "error");
+  }
+
+  if (password.length < 6) {
+    return setFeedback(msg, "La contrasena debe tener al menos 6 caracteres", "error");
+  }
 
   btn.disabled = true;
-  btn.textContent = "Registrando...";
+  btn.textContent = "Creando cuenta...";
 
   try {
-    // Enviamos datos al backend
-    const resp = await fetch(`${API_BASE}/api/users/register`, {
+    await apiFetch("/api/users/register", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, lastname, email, password })
+      body: JSON.stringify({ name, lastname, email, password }),
     });
 
-    const data = await resp.json();
-
-    if (!resp.ok) {
-      return setMsg(data.message || "Error en registro", "err");
-    }
-
-    setMsg("Registro exitoso.");
-
-    // Guardamos el correo para usarlo en login
     sessionStorage.setItem("lastEmail", email);
+    setFeedback(msg, "Registro exitoso. Ahora puedes iniciar sesion.", "success");
 
-    // Redirige después de 1 segundo
-    setTimeout(() => {
+    window.setTimeout(() => {
       window.location.href = "./login.html";
-    }, 1000);
-
+    }, 900);
   } catch (error) {
-    setMsg("No se pudo conectar con el servidor", "err");
+    setFeedback(msg, error.message || "No fue posible registrarte", "error");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Registrarme";
+    btn.textContent = "Crear cuenta";
   }
 });

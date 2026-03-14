@@ -1,7 +1,8 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
-//Valida que el correo vaya en formato de correo
+// Registro de usuario:
+// valida datos, evita correos repetidos y guarda la contrasena con hash.
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 const register = async (req, res) => {
@@ -32,7 +33,6 @@ const register = async (req, res) => {
       lastname: lastname.trim(),
       email: email.toLowerCase().trim(),
       password: hashedPassword,
-      token: null,
     });
 
     // No devolver password
@@ -41,6 +41,10 @@ const register = async (req, res) => {
       user: { id: newUser._id, name: newUser.name, lastname: newUser.lastname, email: newUser.email },
     });
   } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Ya existe un usuario con ese correo" });
+    }
+
     console.error("Error en register:", error);
     return res.status(500).json({ message: "Error registrando usuario" });
   }

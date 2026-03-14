@@ -7,30 +7,39 @@
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body>
-  <main class="container">
-    <h1>Login</h1>
+  <header class="site-header compact">
+    <a class="brand" href="./index.html">TicoAutos</a>
+    <nav id="navActions" class="nav-actions"></nav>
+  </header>
 
-    <form id="loginForm" class="card">
-      <label>
-        Correo
-        <input type="email" id="email" required />
-      </label>
+  <main class="auth-shell">
+    <section class="auth-card">
+      <div>
+        <span class="eyebrow">Acceso</span>
+        <h1>Inicia sesion</h1>
+        <p class="auth-copy">Accede para publicar vehiculos, responder mensajes y administrar tus anuncios.</p>
+      </div>
 
-      <label>
-        Contraseña
-        <input type="password" id="password" required />
-      </label>
+      <form id="loginForm" class="stack-form" novalidate>
+        <label>
+          Correo
+          <input type="email" id="email" required autocomplete="email" placeholder="tu@correo.com" />
+        </label>
 
-      <button type="submit" id="btnLogin">Iniciar sesión</button>
+        <label>
+          Contrasena
+          <input type="password" id="password" required minlength="6" autocomplete="current-password" placeholder="Minimo 6 caracteres" />
+        </label>
 
-      <p id="msg" class="msg" aria-live="polite"></p>
+        <button type="submit" class="btn btn-primary" id="btnLogin">Iniciar sesion</button>
+        <p id="msg" class="feedback" aria-live="polite"></p>
+      </form>
 
-      <p class="hint">
-       ¿No tienes cuenta? <a href="./register.html">Regístrate</a>
-      </p>
-    </form>
+      <p class="auth-link">No tienes cuenta? <a href="./register.html">Registrate aqui</a></p>
+    </section>
   </main>
 
+  <script src="./js/app.js"></script>
   <script src="./js/login.js"></script>
 </body>
 </html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TicoAutos | Mensajes</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand-block">
+      <a class="brand" href="./index.html">TicoAutos</a>
+      <p class="brand-copy">Administra tus conversaciones y responde a las personas interesadas en tus vehiculos.</p>
+    </div>
+    <nav id="navActions" class="nav-actions"></nav>
+  </header>
+
+  <main class="page-shell inbox-layout">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">Mi actividad</span>
+          <h2>Conversaciones iniciadas</h2>
+        </div>
+      </div>
+      <p id="myConversationsFeedback" class="feedback" aria-live="polite"></p>
+      <div id="myConversationsList" class="conversation-list"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">Propietario</span>
+          <h2>Mensajes pendientes</h2>
+        </div>
+      </div>
+      <p id="inboxFeedback" class="feedback" aria-live="polite"></p>
+      <div id="inboxList" class="conversation-list"></div>
+    </section>
+
+    <section class="panel conversation-panel">
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">Conversacion</span>
+          <h2 id="threadTitle">Selecciona una conversacion</h2>
+        </div>
+      </div>
+      <p id="threadFeedback" class="feedback" aria-live="polite"></p>
+      <div id="threadMeta" class="conversation-meta"></div>
+      <div id="threadMessages" class="thread-messages empty-state">Selecciona una conversacion para ver el historial.</div>
+      <form id="replyForm" class="stack-form" novalidate hidden>
+        <label>
+          Responder mensaje
+          <textarea id="replyText" rows="4" placeholder="Escribe una respuesta clara y profesional."></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary">Enviar respuesta</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="./js/app.js"></script>
+  <script src="./js/questions.js"></script>
+</body>
+</html>

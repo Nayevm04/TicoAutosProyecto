@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TicoAutos | Detalle del vehiculo</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand-block">
+      <a class="brand" href="./index.html">TicoAutos</a>
+      <p class="brand-copy">Detalle visual del vehiculo y canal de contacto con su propietario.</p>
+    </div>
+    <nav id="navActions" class="nav-actions"></nav>
+  </header>
+
+  <main class="page-shell">
+    <p id="vehicleFeedback" class="feedback" aria-live="polite"></p>
+
+    <section id="vehicleDetail" class="detail-layout"></section>
+
+    <section class="panel" id="questionPanel">
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">Mensajeria</span>
+          <h2>Hablar con el dueno</h2>
+        </div>
+        <a class="btn btn-secondary" href="./questions.html" id="questionsPageBtn">Ir a bandeja</a>
+      </div>
+
+      <form id="questionForm" class="stack-form" novalidate>
+        <label>
+          Escribe tu mensaje
+          <textarea id="questionText" rows="4" placeholder="Hola, me interesa este vehiculo. Sigue disponible?"></textarea>
+        </label>
+        <button type="submit" class="btn btn-primary" id="askBtn">Enviar mensaje</button>
+      </form>
+
+      <div id="questionPrompt" class="empty-state"></div>
+      <div id="conversationList" class="thread-messages"></div>
+    </section>
+  </main>
+
+  <script src="./js/app.js"></script>
+  <script src="./js/vehicle.js"></script>
+</body>
+</html>

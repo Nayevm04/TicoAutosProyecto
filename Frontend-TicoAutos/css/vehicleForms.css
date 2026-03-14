@@ -1,125 +1,16 @@
-body {
-  margin: 0;
-  background: linear-gradient(135deg, #f4f6f9, #e9eef7);
-  color: #1b1f24;
-  font-family: system-ui, Arial, sans-serif;
-}
-
-.page-wrapper {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
 .vehicle-form-card {
-  width: 100%;
-  max-width: 720px;
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
-  padding: 28px;
-}
-
-.vehicle-form-card h1 {
-  margin: 0 0 8px;
-  font-size: 28px;
-}
-
-.vehicle-form-card .subtitle {
-  margin: 0 0 20px;
-  color: #5f6b7a;
-  font-size: 15px;
-}
-
-.vehicle-form {
-  display: grid;
-  gap: 14px;
+  width: min(760px, 100%);
+  margin: 0 auto;
 }
 
 .vehicle-form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.vehicle-form label {
-  display: grid;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.vehicle-form input {
-  padding: 12px 14px;
-  border: 1px solid #ccd3dd;
-  border-radius: 12px;
-  outline: none;
-  font-size: 14px;
-  background: #fff;
-}
-
-.vehicle-form input:focus {
-  border-color: #2d6cdf;
-  box-shadow: 0 0 0 3px rgba(45, 108, 223, 0.12);
-}
-
-.form-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-
-.btn-primary,
-.btn-secondary {
-  border: none;
-  border-radius: 12px;
-  padding: 12px 16px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.btn-primary {
-  background: #2d6cdf;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #2459b7;
-}
-
-.btn-secondary {
-  background: #e4e9f2;
-  color: #1b1f24;
-}
-
-.btn-secondary:hover {
-  background: #d8deea;
-}
-
-.form-message {
-  min-height: 20px;
-  margin: 0;
-  font-size: 14px;
-}
-
-.form-message.ok {
-  color: #137333;
-}
-
-.form-message.err {
-  color: #b00020;
-}
-
-@media (max-width: 600px) {
+@media (max-width: 760px) {
   .vehicle-form-grid {
     grid-template-columns: 1fr;
-  }
-
-  .vehicle-form-card {
-    padding: 20px;
   }
 }

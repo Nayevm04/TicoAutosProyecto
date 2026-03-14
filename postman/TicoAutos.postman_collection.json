@@ -1,0 +1,337 @@
+{
+  "info": {
+    "_postman_id": "dd3a49b1-1b16-4f62-94b8-cc81c6c12771",
+    "name": "TicoAutos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "ownerToken", "value": "" },
+    { "key": "buyerToken", "value": "" },
+    { "key": "vehicleId", "value": "" },
+    { "key": "conversationId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Juan\",\n  \"lastname\": \"Perez\",\n  \"email\": \"juan@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/register"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Registro propietario correcto', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"juan@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Login propietario correcto', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.expect(data.token).to.be.a('string');",
+                  "});",
+                  "pm.collectionVariables.set('ownerToken', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Buyer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ana\",\n  \"lastname\": \"Lopez\",\n  \"email\": \"ana@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/register"
+          }
+        },
+        {
+          "name": "Login Buyer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ana@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Login interesado correcto', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.expect(data.token).to.be.a('string');",
+                  "});",
+                  "pm.collectionVariables.set('buyerToken', data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Me Owner",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehicles",
+      "item": [
+        {
+          "name": "Create Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"Toyota\",\n  \"model\": \"Corolla\",\n  \"year\": 2020,\n  \"price\": 12500000,\n  \"color\": \"Rojo\"\n}"
+            },
+            "url": "{{baseUrl}}/api/vehicles"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Vehiculo creado', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.expect(data._id).to.exist;",
+                  "});",
+                  "pm.collectionVariables.set('vehicleId', data._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Vehicle With Images",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "brand", "value": "Hyundai", "type": "text" },
+                { "key": "model", "value": "Tucson", "type": "text" },
+                { "key": "year", "value": "2022", "type": "text" },
+                { "key": "price", "value": "18500000", "type": "text" },
+                { "key": "color", "value": "Blanco", "type": "text" },
+                { "key": "images", "type": "file", "src": [] },
+                { "key": "images", "type": "file", "src": [] }
+              ]
+            },
+            "url": "{{baseUrl}}/api/vehicles"
+          }
+        },
+        {
+          "name": "List Vehicles",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?page=1&limit=6"
+          }
+        },
+        {
+          "name": "Filter Vehicles",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles?brand=Toyota&minYear=2018&maxPrice=15000000&page=1&limit=6"
+          }
+        },
+        {
+          "name": "Vehicle Detail",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicles/{{vehicleId}}"
+          }
+        },
+        {
+          "name": "Vehicle Conversation For Buyer",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyerToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/vehicles/{{vehicleId}}/conversation"
+          }
+        },
+        {
+          "name": "Update Vehicle",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": \"Toyota\",\n  \"model\": \"Corolla XEI\",\n  \"year\": 2021,\n  \"price\": 13500000,\n  \"color\": \"Negro\"\n}"
+            },
+            "url": "{{baseUrl}}/api/vehicles/{{vehicleId}}"
+          }
+        },
+        {
+          "name": "Mark Vehicle As Sold",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/vehicles/{{vehicleId}}/sold"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Send Message To Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{buyerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Hola, me interesa este vehiculo. Sigue disponible?\"\n}"
+            },
+            "url": "{{baseUrl}}/api/vehicles/{{vehicleId}}/messages"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.test('Mensaje enviado', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.expect(data._id).to.exist;",
+                  "});",
+                  "pm.collectionVariables.set('conversationId', data._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "My Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyerToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/messages/mine"
+          }
+        },
+        {
+          "name": "Owner Inbox",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/messages/inbox?status=pending&page=1&limit=10"
+          }
+        },
+        {
+          "name": "Open Conversation",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/messages/conversations/{{conversationId}}"
+          }
+        },
+        {
+          "name": "Reply To Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{ownerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Si, sigue disponible y podemos coordinar una cita.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/messages/conversations/{{conversationId}}/messages"
+          }
+        },
+        {
+          "name": "Reopen Conversation As Buyer",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{buyerToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/messages/conversations/{{conversationId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

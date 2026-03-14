@@ -1,96 +1,118 @@
-const API_BASE = "http://localhost:3000";
+const {
+  apiFetch,
+  renderNav,
+  requireAuth,
+  setFeedback,
+} = window.TicoAutos;
 
-const token = sessionStorage.getItem("token");
+if (requireAuth("./login.html")) {
+  // Formulario privado para editar un vehiculo ya publicado.
+  renderNav("navActions");
 
-// Si no hay token, no puede editar
-if (!token) {
-  window.location.href = "./login.html";
-}
+  const form = document.getElementById("editVehicleForm");
+  const imagesInput = document.getElementById("images");
+  const currentImages = document.getElementById("currentImages");
+  const imagePreview = document.getElementById("imagePreview");
+  const msg = document.getElementById("msg");
+  const updateBtn = document.getElementById("updateVehicleBtn");
+  const params = new URLSearchParams(window.location.search);
+  const vehicleId = params.get("id");
 
-const form = document.getElementById("editVehicleForm");
-const msg = document.getElementById("msg");
-
-// Mostrar mensajes
-function setMsg(text, type) {
-  msg.textContent = text;
-  msg.className = `form-message ${type || ""}`;
-}
-
-// Obtener el id desde la URL
-const params = new URLSearchParams(window.location.search);
-const vehicleId = params.get("id");
-
-// Si no viene id, vuelve al inicio
-if (!vehicleId) {
-  window.location.href = "./index.html";
-}
-
-// Cargar información actual del vehículo
-async function loadVehicle() {
-  try {
-    const resp = await fetch(`${API_BASE}/api/vehicles/${vehicleId}`);
-    const data = await resp.json();
-
-    if (!resp.ok) {
-      return setMsg(data.message || "Error cargando vehículo.", "err");
-    }
-
-    // Llena el formulario con la información actual
-    document.getElementById("brand").value = data.brand || "";
-    document.getElementById("model").value = data.model || "";
-    document.getElementById("year").value = data.year || "";
-    document.getElementById("price").value = data.price || "";
-    document.getElementById("color").value = data.color || "";
-
-  } catch (error) {
-    console.error("Error cargando vehículo:", error);
-    setMsg("No se pudo cargar la información del vehículo.", "err");
+  if (!vehicleId) {
+    window.location.href = "./index.html";
   }
-}
 
-// Guardar cambios
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const body = {
-    brand: document.getElementById("brand").value.trim(),
-    model: document.getElementById("model").value.trim(),
-    year: document.getElementById("year").value.trim(),
-    price: document.getElementById("price").value.trim(),
-    color: document.getElementById("color").value.trim()
+  const fillForm = (vehicle) => {
+    // Rellena el formulario con los datos actuales del vehiculo.
+    document.getElementById("brand").value = vehicle.brand || "";
+    document.getElementById("model").value = vehicle.model || "";
+    document.getElementById("year").value = vehicle.year || "";
+    document.getElementById("price").value = vehicle.price || "";
+    document.getElementById("color").value = vehicle.color || "";
+    currentImages.innerHTML = (vehicle.images || [])
+      .map((image) => `<img class="preview-thumb" src="${window.TicoAutos.resolveMediaUrl(image)}" alt="Imagen del vehiculo" />`)
+      .join("");
   };
 
-  if (!body.brand || !body.model || !body.year || !body.price || !body.color) {
-    return setMsg("Todos los campos son obligatorios.", "err");
-  }
+  const renderSelectedImages = () => {
+    imagePreview.innerHTML = "";
 
-  try {
-    const resp = await fetch(`${API_BASE}/api/vehicles/${vehicleId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(body)
+    Array.from(imagesInput.files || []).forEach((file) => {
+      const preview = document.createElement("img");
+      preview.className = "preview-thumb";
+      preview.alt = file.name;
+      preview.src = URL.createObjectURL(file);
+      imagePreview.appendChild(preview);
     });
+  };
 
-    const data = await resp.json();
+  imagesInput.addEventListener("change", renderSelectedImages);
 
-    if (!resp.ok) {
-      return setMsg(data.message || "Error actualizando vehículo.", "err");
+  const loadVehicle = async () => {
+    try {
+      // Primero se consulta el detalle real para editar sobre datos existentes.
+      const vehicle = await apiFetch(`/api/vehicles/${vehicleId}`);
+      fillForm(vehicle);
+    } catch (error) {
+      setFeedback(msg, error.message || "No fue posible cargar el vehiculo", "error");
+    }
+  };
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      brand: document.getElementById("brand").value.trim(),
+      model: document.getElementById("model").value.trim(),
+      year: Number(document.getElementById("year").value),
+      price: Number(document.getElementById("price").value),
+      color: document.getElementById("color").value.trim(),
+    };
+
+    if (!payload.brand || !payload.model || !payload.color) {
+      return setFeedback(msg, "Completa todos los campos requeridos", "error");
     }
 
-    setMsg("Vehículo actualizado correctamente.", "ok");
+    if (!Number.isInteger(payload.year) || payload.year < 1900 || payload.year > 2100) {
+      return setFeedback(msg, "Ingresa un anio valido", "error");
+    }
 
-    setTimeout(() => {
-      window.location.href = "./index.html";
-    }, 800);
+    if (!Number.isFinite(payload.price) || payload.price < 0) {
+      return setFeedback(msg, "Ingresa un precio valido", "error");
+    }
 
-  } catch (error) {
-    console.error("Error actualizando vehículo:", error);
-    setMsg("No se pudo conectar con el servidor.", "err");
-  }
-});
+    updateBtn.disabled = true;
+    updateBtn.textContent = "Actualizando...";
 
-// Carga los datos al abrir la página
-loadVehicle();
+    try {
+      const formData = new FormData();
+      formData.append("brand", payload.brand);
+      formData.append("model", payload.model);
+      formData.append("year", String(payload.year));
+      formData.append("price", String(payload.price));
+      formData.append("color", payload.color);
+
+      Array.from(imagesInput.files || []).forEach((file) => {
+        formData.append("images", file);
+      });
+
+      await apiFetch(`/api/vehicles/${vehicleId}`, {
+        method: "PUT",
+        auth: true,
+        body: formData,
+      });
+
+      setFeedback(msg, "Vehiculo actualizado correctamente", "success");
+      window.setTimeout(() => {
+        window.location.href = `./vehicle.html?id=${vehicleId}`;
+      }, 700);
+    } catch (error) {
+      setFeedback(msg, error.message || "No fue posible actualizar el vehiculo", "error");
+    } finally {
+      updateBtn.disabled = false;
+      updateBtn.textContent = "Actualizar vehiculo";
+    }
+  });
+
+  loadVehicle();
+}
