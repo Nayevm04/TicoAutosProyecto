@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TicoAutos | Principal</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <button id="logoutBtn">Cerrar sesión</button>
+  </header>
+
+  <main class="container">
+    <h1>Bienvenido a Tico Autos </h1>
+    <p>Vehículos publicados</p>
+    
+    <button onclick="goToCreate()">Publicar vehículo</button>
+
+    <div id="vehicleList" class="vehicle-grid"></div>
+  </main>
+
+  <script src="./js/index.js"></script>
+  <script src="./js/vehicles.js"></script>
+
+</body>
+</html>

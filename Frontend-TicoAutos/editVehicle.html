@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TicoAutos | Editar vehículo</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="stylesheet" href="./css/vehicleForms.css" />
+</head>
+<body>
+  <main class="page-wrapper">
+    <section class="vehicle-form-card">
+      <h1>Editar vehículo</h1>
+      <p class="subtitle">Actualiza la información del vehículo.</p>
+
+      <form id="editVehicleForm" class="vehicle-form">
+        <div class="vehicle-form-grid">
+          <label>
+            Marca
+            <input type="text" id="brand" required />
+          </label>
+
+          <label>
+            Modelo
+            <input type="text" id="model" required />
+          </label>
+        </div>
+
+        <div class="vehicle-form-grid">
+          <label>
+            Año
+            <input type="number" id="year" required />
+          </label>
+
+          <label>
+            Precio
+            <input type="number" id="price" required />
+          </label>
+        </div>
+
+        <label>
+          Color
+          <input type="text" id="color" required />
+        </label>
+
+        <p id="msg" class="form-message"></p>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Actualizar vehículo</button>
+          <button type="button" class="btn-secondary" onclick="window.location.href='./index.html'">Volver</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="./js/editVehicle.js"></script>
+</body>
+</html>
